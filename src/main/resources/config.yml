@@ -2,4 +2,3 @@ messages:
   toKillerOnDeath: "&l&6Вы убили заключенного и получили %respect%★"
 settings:
   reduceRespectOnDeath: 10
-  reduceMoneyOnDeath: 15

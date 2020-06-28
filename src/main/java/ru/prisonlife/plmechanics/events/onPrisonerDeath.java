@@ -9,7 +9,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
-import ru.prisonlife.currency.CurrencyManager;
 import ru.prisonlife.item.PrisonItem;
 import ru.prisonlife.plugin.PLPlugin;
 
@@ -25,7 +24,6 @@ public class onPrisonerDeath implements Listener {
     }
 
     FileConfiguration config = plugin.getConfig();
-    CurrencyManager currencyManager = PrisonLife.getCurrencyManager();
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {

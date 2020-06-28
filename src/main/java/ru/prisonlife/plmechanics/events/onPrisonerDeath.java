@@ -1,5 +1,6 @@
 package ru.prisonlife.plmechanics.events;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.currency.CurrencyManager;
+import ru.prisonlife.item.PrisonItem;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.List;
@@ -27,9 +29,6 @@ public class onPrisonerDeath implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        event.setKeepInventory(false);
-        event.getDrops().clear();
-
         Player killer = event.getEntity().getKiller();
         Player dead = event.getEntity().getPlayer();
 
@@ -38,11 +37,10 @@ public class onPrisonerDeath implements Listener {
 
         int respect = respectManager(killerPrisoner, deadPrisoner);
 
-        int money = moneyManager(dead);
+        moneyManager(event.getDrops(), event.getEntity().getLocation());
 
         killer.sendMessage(colorize(config.getString("messages.toKillerOnDeath"))
-                .replace("%respect%", String.valueOf(respect))
-                .replace("%money%", String.valueOf(money)));
+                .replace("%respect%", String.valueOf(respect)));
 
         dead.getInventory().clear();
     }
@@ -56,40 +54,21 @@ public class onPrisonerDeath implements Listener {
         return 0;
     }
 
-    private int moneyManager(Player dead) {
-        int amount = currencyManager.countMoney(dead.getInventory());
+    private void moneyManager(List<ItemStack> drops, Location location) {
+        for (ItemStack drop : drops) {
+            String itemName = drop.getItemMeta().getLocalizedName();
 
-        int reduceMoneyAmount = config.getInt("settings.reduceMoneyOnDeath");
+            boolean one = itemName.equals(PrisonItem.DOLLAR_ONE.getNamespace());
+            boolean two = itemName.equals(PrisonItem.DOLLAR_TWO.getNamespace());
+            boolean five = itemName.equals(PrisonItem.DOLLAR_FIVE.getNamespace());
+            boolean ten = itemName.equals(PrisonItem.DOLLAR_TEN.getNamespace());
+            boolean twenty = itemName.equals(PrisonItem.DOLLAR_TWENTY.getNamespace());
+            boolean fifty = itemName.equals(PrisonItem.DOLLAR_FIFTY.getNamespace());
+            boolean hundred = itemName.equals(PrisonItem.DOLLAR_HUNDRED.getNamespace());
 
-        int killer;
-
-        if (amount >= reduceMoneyAmount) {
-            amount -= reduceMoneyAmount;
-            killer = createMoney(dead, reduceMoneyAmount);
-        } else {
-            killer = createMoney(dead, amount);
-            amount = 0;
-        }
-
-        createDeadMoney(dead, amount);
-        return killer;
-    }
-
-    private int createMoney(Player dead, int reduceAmount) {
-        List<ItemStack> money = currencyManager.createMoney(reduceAmount);
-
-        for (ItemStack item : money) {
-            dead.getWorld().dropItemNaturally(dead.getLocation(), item);
-        }
-
-        return reduceAmount;
-    }
-
-    private void createDeadMoney(Player dead, int amount) {
-        List<ItemStack> money = currencyManager.createMoney(amount);
-
-        for (ItemStack item : money) {
-            dead.getInventory().addItem(item);
+            if (one || two || five || ten || twenty || fifty || hundred) {
+                location.getWorld().dropItemNaturally(location, drop);
+            }
         }
     }
 }

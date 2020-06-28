@@ -2,6 +2,7 @@ package ru.prisonlife.plmechanics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
+import ru.prisonlife.plmechanics.events.onDeath;
 import ru.prisonlife.plmechanics.events.onPrisonerDeath;
 import ru.prisonlife.plugin.PLPlugin;
 import ru.prisonlife.util.Pair;
@@ -32,6 +33,7 @@ public class Main extends PLPlugin {
     private void registerListeners() {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new onPrisonerDeath(this), this);
+        pluginManager.registerEvents(new onDeath(this), this);
     }
 
     private void copyConfigFile() {

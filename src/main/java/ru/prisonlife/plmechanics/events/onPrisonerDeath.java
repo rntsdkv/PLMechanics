@@ -27,6 +27,9 @@ public class onPrisonerDeath implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
+        event.setKeepInventory(false);
+        event.getDrops().clear();
+
         Player killer = event.getEntity().getKiller();
         Player dead = event.getEntity().getPlayer();
 

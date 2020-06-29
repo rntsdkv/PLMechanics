@@ -39,7 +39,7 @@ public class Main extends PLPlugin {
     private void copyConfigFile() {
         File config = new File(getDataFolder() + File.separator + "config.yml");
         if (!config.exists()) {
-            getLogger().info("PLPhones | Default Config copying...");
+            getLogger().info("PLMechanics | Default Config copying...");
             getConfig().options().copyDefaults(true);
             saveDefaultConfig();
         }

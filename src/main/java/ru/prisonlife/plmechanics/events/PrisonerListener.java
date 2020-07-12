@@ -4,7 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.SpawnID;
@@ -47,5 +50,24 @@ public class PrisonerListener implements Listener {
     @EventHandler
     public void onHealthRegain(EntityRegainHealthEvent event) {
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onHungry(FoodLevelChangeEvent event) {
+        Player player = (Player) event.getEntity();
+
+        int level = event.getFoodLevel();
+
+        if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) player.removePotionEffect(PotionEffectType.WEAKNESS);
+        if (player.hasPotionEffect(PotionEffectType.SLOW)) player.removePotionEffect(PotionEffectType.SLOW);
+        if (player.hasPotionEffect(PotionEffectType.CONFUSION)) player.removePotionEffect(PotionEffectType.CONFUSION);
+
+        if (level == 14 || level == 13) player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 0, 1));
+        else if (level == 12 || level == 11) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 1));
+        else if (level == 10 || level == 9) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 2));
+        else if (level == 8 || level == 7) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 3));
+        else if (level >= 6) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 4));
+
+        if (level >= 10) player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 400, 1));
     }
 }

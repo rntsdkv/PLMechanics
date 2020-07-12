@@ -3,6 +3,7 @@ package ru.prisonlife.plmechanics.events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
@@ -41,5 +42,10 @@ public class PrisonerListener implements Listener {
         SpawnBehavior spawnBehavior = SpawnBehaviorFactory.createBehavior(SpawnID.HOSPITAL_SPAWN);
 
         spawnBehavior.spawn(prisoner);
+    }
+
+    @EventHandler
+    public void onHealthRegain(EntityRegainHealthEvent event) {
+        event.setCancelled(true);
     }
 }

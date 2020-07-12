@@ -1,4 +1,6 @@
 messages:
   toKillerOnDeath: "&l&6Вы убили заключенного и получили %respect%★"
+  playerIsOffline: "&l&cИгрок не в сети!"
+  playerAlreadyTrading: "&l&6Игрок уже совершает сделку!"
 settings:
   reduceRespectOnDeath: 10

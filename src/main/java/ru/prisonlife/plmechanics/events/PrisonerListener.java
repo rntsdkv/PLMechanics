@@ -62,12 +62,12 @@ public class PrisonerListener implements Listener {
         if (player.hasPotionEffect(PotionEffectType.SLOW)) player.removePotionEffect(PotionEffectType.SLOW);
         if (player.hasPotionEffect(PotionEffectType.CONFUSION)) player.removePotionEffect(PotionEffectType.CONFUSION);
 
-        if (level == 14 || level == 13) player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 0, 1));
-        else if (level == 12 || level == 11) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 1));
-        else if (level == 10 || level == 9) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 2));
-        else if (level == 8 || level == 7) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 3));
-        else if (level >= 6) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 0, 4));
+        if (level == 14 || level == 13) player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 1));
+        else if (level == 12 || level == 11) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1));
+        else if (level == 10 || level == 9) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
+        else if (level == 8 || level == 7) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 3));
+        else if (level >= 6) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 4));
 
-        if (level >= 10) player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 400, 1));
+        if (level >= 10 && !player.hasPotionEffect(PotionEffectType.CONFUSION)) player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 400, 1));
     }
 }

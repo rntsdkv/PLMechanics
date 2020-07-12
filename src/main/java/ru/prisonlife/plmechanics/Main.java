@@ -2,11 +2,12 @@ package ru.prisonlife.plmechanics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
+import ru.prisonlife.plmechanics.commands.Trade;
 import ru.prisonlife.plmechanics.events.PrisonerListener;
 import ru.prisonlife.plmechanics.events.onItemDrop;
 import ru.prisonlife.plmechanics.events.onPrisonerDeath;
 import ru.prisonlife.plugin.PLPlugin;
-import ru.prisonlife.util.Pair;
+import ru.prisonlife.plugin.PromisedPluginFile;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Main extends PLPlugin {
         return "PLMechanics";
     }
 
-    public List<Pair<String, Object>> initPluginFiles() {
+    public List<PromisedPluginFile> initPluginFiles() {
         return null;
     }
 
@@ -27,6 +28,7 @@ public class Main extends PLPlugin {
     
     public void onEnable() {
         registerListeners();
+        registerCommands();
     }
 
     private void registerListeners() {
@@ -34,6 +36,10 @@ public class Main extends PLPlugin {
         pluginManager.registerEvents(new onPrisonerDeath(this), this);
         pluginManager.registerEvents(new onItemDrop(), this);
         pluginManager.registerEvents(new PrisonerListener(this), this);
+    }
+
+    private void registerCommands() {
+        getCommand("trade").setExecutor(new Trade(this));
     }
 
     private void copyConfigFile() {

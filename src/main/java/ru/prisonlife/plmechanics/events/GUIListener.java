@@ -20,8 +20,6 @@ public class GUIListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
 
-        if (!event.getView().getTitle().equals("Сделка")) return;
-
         Trading trading = null;
 
         for (Trading t : trades) {
@@ -30,8 +28,18 @@ public class GUIListener implements Listener {
             break;
         }
 
+        if (trading == null) return;
+
         if (trading.getLevel() == 1) {
-            if (event.getSlot() != 10) {
+            if (event.getSlot() == 21) {
+                event.setCancelled(true);
+                if (player == trading.getTrader()) trading.setTraderStatus("READY");
+                else trading.setPlayerStatus("READY");
+            } else if (event.getSlot() == 23) {
+                event.setCancelled(true);
+                if (player == trading.getTrader()) trading.setTraderStatus("NOT_READY");
+                else trading.setPlayerStatus("NOT_READY");
+            } else if (event.getSlot() != 10) {
                 event.setCancelled(true);
                 return;
             }

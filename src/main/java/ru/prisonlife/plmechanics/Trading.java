@@ -1,12 +1,12 @@
 package ru.prisonlife.plmechanics;
 
-import net.minecraft.server.v1_15_R1.Behavior;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
@@ -26,8 +26,8 @@ public class Trading {
     private int time;
     private Status traderStatus;
     private Status playerStatus;
-    private List<ItemStack> traderItems;
-    private List<ItemStack> playerItems;
+    private List<ItemStack> traderItems = new ArrayList<>();
+    private List<ItemStack> playerItems = new ArrayList<>();
 
     public Trading(Player trader, Player player, int level) {
         this.trader = trader;

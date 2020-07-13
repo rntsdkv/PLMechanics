@@ -31,7 +31,7 @@ public class TradeAcceptDecline implements CommandExecutor {
 
             if (command.getName().equals("tradeaccept")) {
                 trading.setTime(-1);
-                // TODO дальше
+                trading.start();
                 return true;
             } else if (command.getName().equals("tradedecline")) {
                 trades.remove(i);

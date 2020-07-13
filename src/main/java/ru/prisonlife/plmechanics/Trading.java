@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+import static ru.prisonlife.plmechanics.Main.colorize;
+
 /**
  * @author rntsdkv
  * @project PLMechanics
@@ -56,11 +58,41 @@ public class Trading {
 
     public void setTraderStatus(String status) { traderStatus = Status.valueOf(status); }
 
-    public Status getTraderStatus() { return traderStatus; }
+    public String getTraderStatus() { return traderStatus.name(); }
 
     public void setPlayerStatus(String status) { traderStatus = Status.valueOf(status); }
 
-    public Status getPlayerStatusStatus() { return playerStatus; }
+    public String getPlayerStatusStatus() { return playerStatus.name(); }
+
+    public void updateInventory() {
+        if (level == 1) {
+            trader.getOpenInventory().setItem(16, playerItems.get(0));
+            player.getOpenInventory().setItem(16, traderItems.get(0));
+        }
+
+        if (traderStatus == Status.NOT_READY) {
+            trader.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
+            player.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
+        } else if (traderStatus == Status.READY) {
+            trader.getOpenInventory().setItem(3, new ItemStack(Material.BELL));
+            player.getOpenInventory().setItem(5, new ItemStack(Material.BELL));
+        }
+
+        if (playerStatus == Status.NOT_READY) {
+            player.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
+            trader.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
+        } else if (playerStatus == Status.READY) {
+            player.getOpenInventory().setItem(3, new ItemStack(Material.BELL));
+            trader.getOpenInventory().setItem(5, new ItemStack(Material.BELL));
+        }
+    }
+
+    public void close() {
+        trader.closeInventory();
+        player.closeInventory();
+        trader.sendMessage(colorize("&l&6Сделка разорвана"));
+        player.sendMessage(colorize("&l&6Сделка разорвана"));
+    }
 
     public void start() {
         traderStatus = Status.NOT_READY;

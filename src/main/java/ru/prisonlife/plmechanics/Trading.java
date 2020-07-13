@@ -97,6 +97,10 @@ public class Trading {
     public void start() {
         traderStatus = Status.NOT_READY;
         playerStatus = Status.NOT_READY;
+        createGUI(trader, player);
+    }
+
+    private void createGUI(Player trader, Player player) {
         if (level == 1) {
             ItemStack whiteGlass = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
             ItemStack yellowGlass = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);

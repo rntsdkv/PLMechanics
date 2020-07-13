@@ -36,6 +36,7 @@ public class TradeAcceptDecline implements CommandExecutor {
             } else if (command.getName().equals("tradedecline")) {
                 trades.remove(i);
                 player.sendMessage(colorize("&l&6Вы отказались от сделки"));
+                trading.getTrader().sendMessage(colorize("&l&c" + player.getName() + " отказался от сделки"));
                 return true;
             }
         }

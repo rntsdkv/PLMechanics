@@ -110,8 +110,8 @@ public class Trading {
         if (traderStatus == Status.NOT_READY || playerStatus == Status.NOT_READY) return;
 
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            close("good");
             trades.removeIf(trading -> trading.getTrader() == trader);
+            close("good");
         }, 100);
     }
 

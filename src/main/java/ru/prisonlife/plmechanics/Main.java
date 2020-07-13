@@ -2,6 +2,7 @@ package ru.prisonlife.plmechanics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.plmechanics.commands.Trade;
 import ru.prisonlife.plmechanics.events.PrisonerListener;
 import ru.prisonlife.plmechanics.events.onItemDrop;
@@ -13,6 +14,8 @@ import java.io.File;
 import java.util.List;
 
 public class Main extends PLPlugin {
+
+    public static BukkitTask taskTrades;
 
     public String getPluginName() {
         return "PLMechanics";
@@ -40,6 +43,8 @@ public class Main extends PLPlugin {
 
     private void registerCommands() {
         getCommand("trade").setExecutor(new Trade(this));
+        getCommand("tradeaccept").setExecutor(new Trade(this));
+        getCommand("tradedecline").setExecutor(new Trade(this));
     }
 
     private void copyConfigFile() {

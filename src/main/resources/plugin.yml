@@ -11,4 +11,8 @@ commands:
   tradeaccept:
     description: Accept the trade
     permission: plmechanics.trade.accept
-    usage: /tradeaccept true/false
+    usage: /tradeaccept
+  tradedecline:
+    description: Decline the trade
+    permission: plmechanics.trade.decline
+    usage: /tradedecline

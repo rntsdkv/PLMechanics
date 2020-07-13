@@ -73,7 +73,7 @@ public class Trading {
         traderStatus = Status.valueOf(status);
 
         if (traderStatus == Status.NOT_READY) {
-            task.cancel();
+            if (task.isSync()) task.cancel();
             trader.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
             player.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
         } else if (traderStatus == Status.READY) {
@@ -97,7 +97,7 @@ public class Trading {
         playerStatus = Status.valueOf(status);
 
         if (playerStatus == Status.NOT_READY) {
-            task.cancel();
+            if (task.isSync()) task.cancel();
             player.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
             trader.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
         } else if (playerStatus == Status.READY) {

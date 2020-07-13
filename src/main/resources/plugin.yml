@@ -8,3 +8,7 @@ commands:
     description: Trade with players!
     permission: plmechanics.trade
     usage: /trade <player>
+  tradeaccept:
+    description: Accept the trade
+    permission: plmechanics.trade.accept
+    usage: /tradeaccept true/false

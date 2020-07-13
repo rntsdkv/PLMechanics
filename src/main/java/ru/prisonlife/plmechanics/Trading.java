@@ -43,6 +43,14 @@ public class Trading {
 
     public void reduceTime() { if (time != -1) time--; }
 
+    public void clearTraderItems() { traderItems.clear(); }
+
+    public void clearPlayerItems() { playerItems.clear(); }
+
+    public void putTraderItem(ItemStack item) { traderItems.add(item); }
+
+    public void putPlayerItem(ItemStack item) { playerItems.add(item); }
+
     public void start() {
         if (level == 1) {
             Inventory gui = Bukkit.createInventory(null, 27, "Сделка");

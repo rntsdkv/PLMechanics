@@ -4,6 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.plmechanics.commands.Trade;
+import ru.prisonlife.plmechanics.commands.TradeAcceptDecline;
+import ru.prisonlife.plmechanics.events.GUIListener;
 import ru.prisonlife.plmechanics.events.PrisonerListener;
 import ru.prisonlife.plmechanics.events.onItemDrop;
 import ru.prisonlife.plmechanics.events.onPrisonerDeath;
@@ -39,12 +41,13 @@ public class Main extends PLPlugin {
         pluginManager.registerEvents(new onPrisonerDeath(this), this);
         pluginManager.registerEvents(new onItemDrop(), this);
         pluginManager.registerEvents(new PrisonerListener(this), this);
+        pluginManager.registerEvents(new GUIListener(), this);
     }
 
     private void registerCommands() {
         getCommand("trade").setExecutor(new Trade(this));
-        getCommand("tradeaccept").setExecutor(new Trade(this));
-        getCommand("tradedecline").setExecutor(new Trade(this));
+        getCommand("tradeaccept").setExecutor(new TradeAcceptDecline());
+        getCommand("tradedecline").setExecutor(new TradeAcceptDecline());
     }
 
     private void copyConfigFile() {

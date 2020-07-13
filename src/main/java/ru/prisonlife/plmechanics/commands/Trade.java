@@ -47,6 +47,13 @@ public class Trade implements CommandExecutor {
         Player player = (Player) commandSender;
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
+        for (Trading trading : trades) {
+            if (trading.getTrader() == player) {
+                player.sendMessage(colorize("&l&cДождитесь ответа на прошлый запрос!"));
+                return true;
+            }
+        }
+
         if (strings.length != 1) return false;
 
         String name = strings[0];

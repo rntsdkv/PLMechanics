@@ -69,7 +69,7 @@ public class GUIListener implements Listener {
         Player player = (Player) event.getPlayer();
 
         for (Trading trading : trades) {
-            trading.close();
+            trading.close("bad");
             if (player == trading.getTrader() || player == trading.getPlayer()) trades.remove(trading);
         }
     }

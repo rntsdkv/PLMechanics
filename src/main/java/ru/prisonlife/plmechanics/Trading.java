@@ -5,11 +5,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
+import ru.prisonlife.plugin.PLPlugin;
+import ru.prisonlife.util.InventoryUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
+import static ru.prisonlife.plmechanics.commands.Trade.trades;
 
 /**
  * @author rntsdkv
@@ -17,6 +23,11 @@ import static ru.prisonlife.plmechanics.Main.colorize;
  */
 
 public class Trading {
+
+    private PLPlugin plugin;
+    public Trading(PLPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     enum Status { NOT_READY, READY }
 
@@ -28,6 +39,7 @@ public class Trading {
     private Status playerStatus;
     private List<ItemStack> traderItems = new ArrayList<>();
     private List<ItemStack> playerItems = new ArrayList<>();
+    private BukkitTask task;
 
     public Trading(Player trader, Player player, int level) {
         this.trader = trader;
@@ -71,6 +83,7 @@ public class Trading {
         }
 
         if (traderStatus == Status.NOT_READY) {
+            task.cancel();
             trader.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
             player.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
         } else if (traderStatus == Status.READY) {
@@ -79,25 +92,46 @@ public class Trading {
         }
 
         if (playerStatus == Status.NOT_READY) {
+            task.cancel();
             player.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
             trader.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
         } else if (playerStatus == Status.READY) {
             player.getOpenInventory().setItem(3, new ItemStack(Material.BELL));
             trader.getOpenInventory().setItem(5, new ItemStack(Material.BELL));
         }
+
+        if (traderStatus == Status.NOT_READY || playerStatus == Status.NOT_READY) return;
+
+        task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            close("good");
+            trades.removeIf(trading -> trading.getTrader() == trader);
+        }, 100);
     }
 
-    public void close() {
+    public void close(String status) {
         trader.closeInventory();
         player.closeInventory();
-        trader.sendMessage(colorize("&l&6Сделка разорвана"));
-        player.sendMessage(colorize("&l&6Сделка разорвана"));
+        trader.removePotionEffect(PotionEffectType.GLOWING);
+        player.removePotionEffect(PotionEffectType.GLOWING);
+        if (status.equals("bad")) {
+            InventoryUtil.putItemStacks(trader.getInventory(), traderItems);
+            InventoryUtil.putItemStacks(player.getInventory(), playerItems);
+            trader.sendMessage(colorize("&l&6Сделка разорвана"));
+            player.sendMessage(colorize("&l&6Сделка разорвана"));
+        } else {
+            InventoryUtil.putItemStacks(trader.getInventory(), playerItems);
+            InventoryUtil.putItemStacks(player.getInventory(), traderItems);
+            trader.sendMessage(colorize("&l&6Сделка завершена"));
+            player.sendMessage(colorize("&l&6Сделка завершена"));
+        }
     }
 
     public void start() {
         traderStatus = Status.NOT_READY;
         playerStatus = Status.NOT_READY;
         createGUI(trader, player);
+        trader.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
     }
 
     private void createGUI(Player trader, Player player) {

@@ -36,12 +36,10 @@ public class GUIListener implements Listener {
                 event.setCancelled(true);
                 if (player == trading.getTrader()) trading.setTraderStatus("READY");
                 else trading.setPlayerStatus("READY");
-                trading.updateInventory();
             } else if (event.getSlot() == 23) {
                 event.setCancelled(true);
                 if (player == trading.getTrader()) trading.setTraderStatus("NOT_READY");
                 else trading.setPlayerStatus("NOT_READY");
-                trading.updateInventory();
             } else if (event.getSlot() != 10) {
                 event.setCancelled(true);
                 return;
@@ -52,7 +50,7 @@ public class GUIListener implements Listener {
                 trading.clearTraderItems();
                 trading.putTraderItem(item);
                 trading.updateInventory();
-            } else if (trading.getPlayer() == player && trading.getPlayerStatusStatus().equals("NOT_READY")) {
+            } else if (trading.getPlayer() == player && trading.getPlayerStatus().equals("NOT_READY")) {
                 ItemStack item = event.getClickedInventory().getItem(10);
                 if (item == null) return;
                 trading.clearPlayerItems();

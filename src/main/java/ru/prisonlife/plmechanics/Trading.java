@@ -2,6 +2,7 @@ package ru.prisonlife.plmechanics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -68,34 +69,40 @@ public class Trading {
 
     public void putPlayerItem(ItemStack item) { playerItems.add(item); }
 
-    public void setTraderStatus(String status) { traderStatus = Status.valueOf(status); }
-
-    public String getTraderStatus() { return traderStatus.name(); }
-
-    public void setPlayerStatus(String status) { traderStatus = Status.valueOf(status); }
-
-    public String getPlayerStatusStatus() { return playerStatus.name(); }
-
-    public void updateInventory() {
-        if (level == 1) {
-            trader.getOpenInventory().setItem(16, playerItems.get(0));
-            player.getOpenInventory().setItem(16, traderItems.get(0));
-        }
+    public void setTraderStatus(String status) {
+        traderStatus = Status.valueOf(status);
 
         if (traderStatus == Status.NOT_READY) {
             task.cancel();
             trader.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
             player.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
         } else if (traderStatus == Status.READY) {
+            trader.playSound(trader.getLocation(), Sound.BLOCK_BELL_USE, 1, 1);
+            player.playSound(player.getLocation(), Sound.BLOCK_BELL_USE, 1, 1);
             trader.getOpenInventory().setItem(3, new ItemStack(Material.BELL));
             player.getOpenInventory().setItem(5, new ItemStack(Material.BELL));
         }
+
+        if (traderStatus == Status.NOT_READY || playerStatus == Status.NOT_READY) return;
+
+        task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            close("good");
+            trades.removeIf(trading -> trading.getTrader() == trader);
+        }, 100);
+    }
+
+    public String getTraderStatus() { return traderStatus.name(); }
+
+    public void setPlayerStatus(String status) {
+        playerStatus = Status.valueOf(status);
 
         if (playerStatus == Status.NOT_READY) {
             task.cancel();
             player.getOpenInventory().setItem(3, new ItemStack(Material.COMPASS));
             trader.getOpenInventory().setItem(5, new ItemStack(Material.COMPASS));
         } else if (playerStatus == Status.READY) {
+            trader.playSound(trader.getLocation(), Sound.BLOCK_BELL_USE, 1, 1);
+            player.playSound(player.getLocation(), Sound.BLOCK_BELL_USE, 1, 1);
             player.getOpenInventory().setItem(3, new ItemStack(Material.BELL));
             trader.getOpenInventory().setItem(5, new ItemStack(Material.BELL));
         }
@@ -106,6 +113,15 @@ public class Trading {
             close("good");
             trades.removeIf(trading -> trading.getTrader() == trader);
         }, 100);
+    }
+
+    public String getPlayerStatus() { return playerStatus.name(); }
+
+    public void updateInventory() {
+        if (level == 1) {
+            trader.getOpenInventory().setItem(16, playerItems.get(0));
+            player.getOpenInventory().setItem(16, traderItems.get(0));
+        }
     }
 
     public void close(String status) {
@@ -119,8 +135,17 @@ public class Trading {
             trader.sendMessage(colorize("&l&6Сделка разорвана"));
             player.sendMessage(colorize("&l&6Сделка разорвана"));
         } else {
-            InventoryUtil.putItemStacks(trader.getInventory(), playerItems);
-            InventoryUtil.putItemStacks(player.getInventory(), traderItems);
+            try {
+                InventoryUtil.putItemStacks(player.getInventory(), traderItems);
+                InventoryUtil.putItemStacks(trader.getInventory(), playerItems);
+            } catch (Exception e) {
+                InventoryUtil.putItemStacks(trader.getInventory(), traderItems);
+                InventoryUtil.putItemStacks(player.getInventory(), playerItems);
+                trader.sendMessage(colorize("&l&cСделка разорвана, у одного из вас недостаточно места в карманах"));
+                player.sendMessage(colorize("&l&cСделка разорвана, у одного из вас недостаточно места в карманах"));
+                return;
+            }
+
             trader.sendMessage(colorize("&l&6Сделка завершена"));
             player.sendMessage(colorize("&l&6Сделка завершена"));
         }

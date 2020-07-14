@@ -99,79 +99,88 @@ public class PrisonerListener implements Listener {
         }
 
         if (message.length() <= 25) {
-            ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
-            armorStand.setGravity(false);
-            armorStand.setVisible(false);
-            armorStand.setCustomNameVisible(true);
-            armorStand.setCustomName(message);
-            messagesStands.put(player, new ArrayList<>());
-            messagesStands.get(player).add(armorStand);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                        ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
+                        armorStand.setGravity(false);
+                        armorStand.setVisible(false);
+                        armorStand.setCustomNameVisible(true);
+                        armorStand.setCustomName(message);
+                messagesStands.put(player, new ArrayList<>());
+                messagesStands.get(player).add(armorStand);
+            });
         } else if (message.length() <= 50) {
-            ArmorStand armorStand1 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.75, z), EntityType.ARMOR_STAND);
-            armorStand1.setGravity(false);
-            armorStand1.setVisible(false);
-            armorStand1.setCustomNameVisible(true);
-            armorStand1.setCustomName(message.substring(0, 24));
-            messagesStands.put(player, new ArrayList<>());
-            messagesStands.get(player).add(armorStand1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                ArmorStand armorStand1 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.75, z), EntityType.ARMOR_STAND);
+                armorStand1.setGravity(false);
+                armorStand1.setVisible(false);
+                armorStand1.setCustomNameVisible(true);
+                armorStand1.setCustomName(message.substring(0, 24));
+                messagesStands.put(player, new ArrayList<>());
+                messagesStands.get(player).add(armorStand1);
 
-            ArmorStand armorStand2 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
-            armorStand2.setGravity(false);
-            armorStand2.setVisible(false);
-            armorStand2.setCustomNameVisible(true);
-            armorStand2.setCustomName(message.substring(25, 49));
-            messagesStands.get(player).add(armorStand2);
+                ArmorStand armorStand2 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
+                armorStand2.setGravity(false);
+                armorStand2.setVisible(false);
+                armorStand2.setCustomNameVisible(true);
+                armorStand2.setCustomName(message.substring(25, 49));
+                messagesStands.get(player).add(armorStand2);
+            });
         } else if (message.length() <= 75) {
-            ArmorStand armorStand1 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 1, z), EntityType.ARMOR_STAND);
-            armorStand1.setGravity(false);
-            armorStand1.setVisible(false);
-            armorStand1.setCustomNameVisible(true);
-            armorStand1.setCustomName(message.substring(0, 24));
-            messagesStands.put(player, new ArrayList<>());
-            messagesStands.get(player).add(armorStand1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 
-            ArmorStand armorStand2 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.75, z), EntityType.ARMOR_STAND);
-            armorStand2.setGravity(false);
-            armorStand2.setVisible(false);
-            armorStand2.setCustomNameVisible(true);
-            armorStand2.setCustomName(message.substring(25, 49));
-            messagesStands.get(player).add(armorStand2);
+                ArmorStand armorStand1 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 1, z), EntityType.ARMOR_STAND);
+                armorStand1.setGravity(false);
+                armorStand1.setVisible(false);
+                armorStand1.setCustomNameVisible(true);
+                armorStand1.setCustomName(message.substring(0, 24));
+                messagesStands.put(player, new ArrayList<>());
+                messagesStands.get(player).add(armorStand1);
 
-            ArmorStand armorStand3 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
-            armorStand3.setGravity(false);
-            armorStand3.setVisible(false);
-            armorStand3.setCustomNameVisible(true);
-            armorStand3.setCustomName(message.substring(50, 74));
-            messagesStands.get(player).add(armorStand3);
+                ArmorStand armorStand2 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.75, z), EntityType.ARMOR_STAND);
+                armorStand2.setGravity(false);
+                armorStand2.setVisible(false);
+                armorStand2.setCustomNameVisible(true);
+                armorStand2.setCustomName(message.substring(25, 49));
+                messagesStands.get(player).add(armorStand2);
+
+                ArmorStand armorStand3 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
+                armorStand3.setGravity(false);
+                armorStand3.setVisible(false);
+                armorStand3.setCustomNameVisible(true);
+                armorStand3.setCustomName(message.substring(50, 74));
+                messagesStands.get(player).add(armorStand3);
+            });
         } else if (message.length() <= 100) {
-            ArmorStand armorStand1 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 1.25, z), EntityType.ARMOR_STAND);
-            armorStand1.setGravity(false);
-            armorStand1.setVisible(false);
-            armorStand1.setCustomNameVisible(true);
-            armorStand1.setCustomName(message.substring(0, 24));
-            messagesStands.put(player, new ArrayList<>());
-            messagesStands.get(player).add(armorStand1);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                ArmorStand armorStand1 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 1.25, z), EntityType.ARMOR_STAND);
+                armorStand1.setGravity(false);
+                armorStand1.setVisible(false);
+                armorStand1.setCustomNameVisible(true);
+                armorStand1.setCustomName(message.substring(0, 24));
+                messagesStands.put(player, new ArrayList<>());
+                messagesStands.get(player).add(armorStand1);
 
-            ArmorStand armorStand2 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 1, z), EntityType.ARMOR_STAND);
-            armorStand2.setGravity(false);
-            armorStand2.setVisible(false);
-            armorStand2.setCustomNameVisible(true);
-            armorStand2.setCustomName(message.substring(25, 49));
-            messagesStands.get(player).add(armorStand2);
+                ArmorStand armorStand2 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 1, z), EntityType.ARMOR_STAND);
+                armorStand2.setGravity(false);
+                armorStand2.setVisible(false);
+                armorStand2.setCustomNameVisible(true);
+                armorStand2.setCustomName(message.substring(25, 49));
+                messagesStands.get(player).add(armorStand2);
 
-            ArmorStand armorStand3 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.75, z), EntityType.ARMOR_STAND);
-            armorStand3.setGravity(false);
-            armorStand3.setVisible(false);
-            armorStand3.setCustomNameVisible(true);
-            armorStand3.setCustomName(message.substring(50, 74));
-            messagesStands.get(player).add(armorStand3);
+                ArmorStand armorStand3 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.75, z), EntityType.ARMOR_STAND);
+                armorStand3.setGravity(false);
+                armorStand3.setVisible(false);
+                armorStand3.setCustomNameVisible(true);
+                armorStand3.setCustomName(message.substring(50, 74));
+                messagesStands.get(player).add(armorStand3);
 
-            ArmorStand armorStand4 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
-            armorStand4.setGravity(false);
-            armorStand4.setVisible(false);
-            armorStand4.setCustomNameVisible(true);
-            armorStand4.setCustomName(message.substring(75, 99));
-            messagesStands.get(player).add(armorStand4);
+                ArmorStand armorStand4 = (ArmorStand) world.spawnEntity(new Location(world, x, y + 0.5, z), EntityType.ARMOR_STAND);
+                armorStand4.setGravity(false);
+                armorStand4.setVisible(false);
+                armorStand4.setCustomNameVisible(true);
+                armorStand4.setCustomName(message.substring(75, 99));
+                messagesStands.get(player).add(armorStand4);
+            });
         }
 
         messagesTimer.put(player, 0);

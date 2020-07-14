@@ -99,19 +99,19 @@ public class PrisonerListener implements Listener {
 
 
         if (message.length() <= 25) {
-            createArmorStand(player, message, x, y + 0.5, z);
+            createArmorStand(player, message, x, y + 0.25, z);
         } else if (message.length() <= 50) {
-            createArmorStand(player, message.substring(0, 24), x, y + 0.75, z);
-            createArmorStand(player, message.substring(25, 49), x, y + 0.5, z);
+            createArmorStand(player, message.substring(0, 25), x, y + 0.5, z);
+            createArmorStand(player, message.substring(25, 50), x, y + 0.25, z);
         } else if (message.length() <= 75) {
-            createArmorStand(player, message.substring(0, 24), x, y + 1, z);
-            createArmorStand(player, message.substring(25, 49), x, y + 0.75, z);
-            createArmorStand(player, message.substring(50, 74), x, y + 0.5, z);
+            createArmorStand(player, message.substring(0, 25), x, y + 0.75, z);
+            createArmorStand(player, message.substring(25, 50), x, y + 0.5, z);
+            createArmorStand(player, message.substring(50, 75), x, y + 0.25, z);
         } else if (message.length() <= 100) {
-            createArmorStand(player, message.substring(0, 24), x, y + 1.25, z);
-            createArmorStand(player, message.substring(25, 49), x, y + 1, z);
-            createArmorStand(player, message.substring(50, 74), x, y + 0.75, z);
-            createArmorStand(player, message.substring(75, 99), x, y + 0.5, z);
+            createArmorStand(player, message.substring(0, 25), x, y + 1, z);
+            createArmorStand(player, message.substring(25, 50), x, y + 0.75, z);
+            createArmorStand(player, message.substring(50, 75), x, y + 0.5, z);
+            createArmorStand(player, message.substring(75, 100), x, y + 0.25, z);
         }
         messagesTimer.put(player, 0);
 
@@ -121,10 +121,10 @@ public class PrisonerListener implements Listener {
                     messagesTimer.replace(p, messagesTimer.get(p) + 1);
                     if (messagesTimer.get(p) == 10) {
                         for (ArmorStand a : messagesStands.get(p)) {
-                            messagesTimer.remove(p);
-                            messagesStands.remove(p);
                             a.remove();
                         }
+                        messagesTimer.remove(p);
+                        messagesStands.remove(p);
                     }
                 }
                 if (messagesTimer.size() == 0) taskMessages.cancel();
@@ -141,22 +141,22 @@ public class PrisonerListener implements Listener {
             Location location = player.getLocation();
 
             if (armorsStands.size() == 1) {
-                armorsStands.get(0).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(0).teleport(location.add(0, 0.25, 0));
             }
             else if (armorsStands.size() == 2) {
-                armorsStands.get(0).teleport(location.add(0, 0.75, 0));
-                armorsStands.get(1).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(0).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(1).teleport(location.add(0, 0.25, 0));
             }
             else if (armorsStands.size() == 3) {
+                armorsStands.get(0).teleport(location.add(0, 0.75, 0));
+                armorsStands.get(1).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(2).teleport(location.add(0, 0.25, 0));
+            }
+            else if (armorsStands.size() == 4) {
                 armorsStands.get(0).teleport(location.add(0, 1, 0));
                 armorsStands.get(1).teleport(location.add(0, 0.75, 0));
                 armorsStands.get(2).teleport(location.add(0, 0.5, 0));
-            }
-            else if (armorsStands.size() == 4) {
-                armorsStands.get(0).teleport(location.add(0, 1.25, 0));
-                armorsStands.get(1).teleport(location.add(0, 1, 0));
-                armorsStands.get(2).teleport(location.add(0, 0.75, 0));
-                armorsStands.get(3).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(3).teleport(location.add(0, 0.25, 0));
             }
         }
     }

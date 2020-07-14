@@ -26,12 +26,9 @@ public class Main extends PLPlugin {
     public List<PromisedPluginFile> initPluginFiles() {
         return null;
     }
-
-    public void onCreate() {
-        copyConfigFile();
-    }
     
     public void onEnable() {
+        copyConfigFile();
         registerListeners();
         registerCommands();
     }

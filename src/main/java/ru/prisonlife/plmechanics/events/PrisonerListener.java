@@ -170,7 +170,7 @@ public class PrisonerListener implements Listener {
             armorStand.setCustomNameVisible(true);
             armorStand.setCustomName(text);
 
-            if (messagesStands.containsKey(player)) {
+            if (!messagesStands.containsKey(player)) {
                 messagesStands.put(player, new ArrayList<>());
             }
 

@@ -8,7 +8,7 @@ import ru.prisonlife.plmechanics.commands.TradeAcceptDecline;
 import ru.prisonlife.plmechanics.events.GUIListener;
 import ru.prisonlife.plmechanics.events.PrisonerListener;
 import ru.prisonlife.plmechanics.events.onItemDrop;
-import ru.prisonlife.plmechanics.events.onPrisonerDeath;
+import ru.prisonlife.plmechanics.events.PrisonerDeath;
 import ru.prisonlife.plugin.PLPlugin;
 import ru.prisonlife.plugin.PromisedPluginFile;
 
@@ -38,7 +38,7 @@ public class Main extends PLPlugin {
 
     private void registerListeners() {
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new onPrisonerDeath(this), this);
+        pluginManager.registerEvents(new PrisonerDeath(this), this);
         pluginManager.registerEvents(new onItemDrop(), this);
         pluginManager.registerEvents(new PrisonerListener(this), this);
         pluginManager.registerEvents(new GUIListener(), this);

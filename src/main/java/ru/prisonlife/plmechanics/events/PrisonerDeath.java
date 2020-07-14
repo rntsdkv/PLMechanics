@@ -17,14 +17,12 @@ import java.util.List;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
 
-public class onPrisonerDeath implements Listener {
+public class PrisonerDeath implements Listener {
 
     private PLPlugin plugin;
-    public onPrisonerDeath(PLPlugin main) {
+    public PrisonerDeath(PLPlugin main) {
         this.plugin = main;
     }
-
-    FileConfiguration config = plugin.getConfig();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent event) {
@@ -33,6 +31,7 @@ public class onPrisonerDeath implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        FileConfiguration config = plugin.getConfig();
         Player killer = event.getEntity().getKiller();
         Player dead = event.getEntity().getPlayer();
 
@@ -50,6 +49,7 @@ public class onPrisonerDeath implements Listener {
     }
 
     private int respectManager(Prisoner killer, Prisoner dead) {
+        FileConfiguration config = plugin.getConfig();
         int respect = config.getInt("settings.reduceRespectOnDeath");
         if (killer.getRespect() < dead.getRespect()) {
             dead.setRespect(dead.getRespect() - respect);

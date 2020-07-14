@@ -95,6 +95,7 @@ public class PrisonerListener implements Listener {
         if (messagesStands.containsKey(player)) {
             for (ArmorStand armorStand : messagesStands.get(player)) armorStand.remove();
             messagesTimer.remove(player);
+            messagesStands.remove(player);
         }
 
 

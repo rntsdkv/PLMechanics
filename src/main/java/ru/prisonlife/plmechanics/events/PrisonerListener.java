@@ -109,11 +109,11 @@ public class PrisonerListener implements Listener {
             messages.remove(player);
         }
 
-        if (message.length() <= 80) {
+        if (message.length() <= 20) {
             createArmorStand(player, message, x, y + 0.25, z);
-        } else if (message.length() <= 130) {
-            createArmorStand(player, message.substring(0, 80), x, y + 0.5, z);
-            createArmorStand(player, message.substring(80, 130), x, y + 0.25, z);
+        } else if (message.length() <= 70) {
+            createArmorStand(player, message.substring(0, 50), x, y + 0.5, z);
+            createArmorStand(player, message.substring(50, 70), x, y + 0.25, z);
         } else if (message.length() <= 150) {
             createArmorStand(player, message.substring(0, 80), x, y + 0.75, z);
             createArmorStand(player, message.substring(80, 130), x, y + 0.5, z);

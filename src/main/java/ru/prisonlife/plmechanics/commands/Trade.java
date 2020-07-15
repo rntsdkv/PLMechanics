@@ -80,8 +80,10 @@ public class Trade implements CommandExecutor {
                     if (trading.getTime() == -1) continue;
 
                     trading.reduceTime();
-                    if (trading.getTime() == 0) trades.remove(trading);
-                    trading.getTrader().sendMessage(colorize("&l&6Время ожидания сделки окончилось..."));
+                    if (trading.getTime() == 0) {
+                        trades.remove(trading);
+                        trading.getTrader().sendMessage(colorize("&l&6Время ожидания сделки окончилось..."));
+                    }
                 }
                 if (trades.size() == 0) taskTrades.cancel();
             }, 0, 20);

@@ -100,9 +100,9 @@ public class PrisonerListener implements Listener {
             BoldPoint boldPoint = BoldPoint.fromLocation(p.getLocation());
             Bukkit.broadcastMessage("3");
             if (!PositionManager.instance().atSector(locationPoint, 20, boldPoint)) return;
-            if (!PositionManager.instance().atSector(locationPoint, 10, boldPoint)) {
+            if (PositionManager.instance().atSector(locationPoint, 10, boldPoint)) {
                 p.sendMessage(message + chatColor + " (" + player.getName() + ")");
-            } else if (!PositionManager.instance().atSector(locationPoint, 15, boldPoint)) {
+            } else if (PositionManager.instance().atSector(locationPoint, 15, boldPoint)) {
                 p.sendMessage(ChatColor.GRAY + message + " (" + player.getName() + ")");
             } else {
                 p.sendMessage(ChatColor.DARK_GRAY + message + " (" + player.getName() + ")");

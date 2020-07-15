@@ -82,7 +82,7 @@ public class PrisonerListener implements Listener {
 
         event.setCancelled(true);
 
-        if (message.length() > 150) {
+        if (message.length() > 100) {
             player.sendMessage(colorize(plugin.getConfig().getString("messages.messageLength")));
             return;
         }
@@ -91,14 +91,10 @@ public class PrisonerListener implements Listener {
         if (PrisonLife.getPrisoner(player).getFaction() == null) chatColor = ChatColor.WHITE;
         else chatColor = prisoner.getFaction().getColor();
 
-        Bukkit.broadcastMessage("0");
         BoldPoint locationPoint = BoldPoint.fromLocation(player.getLocation());
-        Bukkit.broadcastMessage("1");
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            Bukkit.broadcastMessage("2");
             BoldPoint boldPoint = BoldPoint.fromLocation(p.getLocation());
-            Bukkit.broadcastMessage("3");
             if (!PositionManager.instance().atSector(locationPoint, 20, boldPoint)) return;
             if (PositionManager.instance().atSector(locationPoint, 10, boldPoint)) {
                 p.sendMessage(message + chatColor + " (" + player.getName() + ")");
@@ -123,13 +119,23 @@ public class PrisonerListener implements Listener {
 
         if (message.length() <= 20) {
             createArmorStand(player, message, x, y + 0.25, z);
+        } else if (message.length() <= 30) {
+            createArmorStand(player, message.substring(0, 20), x, y + 0.5, z);
+            createArmorStand(player, message.substring(20), x, y + 0.25, z);
+        } else if (message.length() <= 50) {
+            createArmorStand(player, message.substring(0, 35), x, y + 0.5, z);
+            createArmorStand(player, message.substring(35), x, y + 0.25, z);
         } else if (message.length() <= 70) {
-            createArmorStand(player, message.substring(0, 50), x, y + 0.5, z);
-            createArmorStand(player, message.substring(50, 70), x, y + 0.25, z);
-        } else if (message.length() <= 150) {
-            createArmorStand(player, message.substring(0, 80), x, y + 0.75, z);
-            createArmorStand(player, message.substring(80, 130), x, y + 0.5, z);
-            createArmorStand(player, message.substring(130, 150), x, y + 0.25, z);
+            createArmorStand(player, message.substring(0, 45), x, y + 0.5, z);
+            createArmorStand(player, message.substring(45), x, y + 0.25, z);
+        } else if (message.length() <= 80) {
+            createArmorStand(player, message.substring(0, 45), x, y + 0.75, z);
+            createArmorStand(player, message.substring(45, 65), x, y + 0.5, z);
+            createArmorStand(player, message.substring(65), x, y + 0.25, z);
+        } else if (message.length() <= 100) {
+            createArmorStand(player, message.substring(0, 50), x, y + 0.75, z);
+            createArmorStand(player, message.substring(50, 80), x, y + 0.5, z);
+            createArmorStand(player, message.substring(80), x, y + 0.25, z);
         }
 
         BukkitTask taskMessage;

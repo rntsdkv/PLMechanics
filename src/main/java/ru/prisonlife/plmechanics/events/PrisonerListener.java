@@ -78,11 +78,12 @@ public class PrisonerListener implements Listener {
     public void onMessageSend(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
+        int messageLength = message.length();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
         event.setCancelled(true);
 
-        if (message.length() > 100) {
+        if (messageLength > 100) {
             player.sendMessage(colorize(plugin.getConfig().getString("messages.messageLength")));
             return;
         }
@@ -117,22 +118,22 @@ public class PrisonerListener implements Listener {
             messages.remove(player);
         }
 
-        if (message.length() <= 20) {
+        if (messageLength <= 20) {
             createArmorStand(player, message, x, y + 0.25, z);
-        } else if (message.length() <= 30) {
+        } else if (messageLength <= 30) {
             createArmorStand(player, message.substring(0, 20), x, y + 0.5, z);
             createArmorStand(player, message.substring(20), x, y + 0.25, z);
-        } else if (message.length() <= 50) {
+        } else if (messageLength <= 50) {
             createArmorStand(player, message.substring(0, 35), x, y + 0.5, z);
             createArmorStand(player, message.substring(35), x, y + 0.25, z);
-        } else if (message.length() <= 70) {
+        } else if (messageLength <= 70) {
             createArmorStand(player, message.substring(0, 45), x, y + 0.5, z);
             createArmorStand(player, message.substring(45), x, y + 0.25, z);
-        } else if (message.length() <= 80) {
+        } else if (messageLength <= 80) {
             createArmorStand(player, message.substring(0, 45), x, y + 0.75, z);
             createArmorStand(player, message.substring(45, 65), x, y + 0.5, z);
             createArmorStand(player, message.substring(65), x, y + 0.25, z);
-        } else if (message.length() <= 100) {
+        } else {
             createArmorStand(player, message.substring(0, 50), x, y + 0.75, z);
             createArmorStand(player, message.substring(50, 80), x, y + 0.5, z);
             createArmorStand(player, message.substring(80), x, y + 0.25, z);

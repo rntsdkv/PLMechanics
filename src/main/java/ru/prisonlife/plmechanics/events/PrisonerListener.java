@@ -95,7 +95,7 @@ public class PrisonerListener implements Listener {
         event.setCancelled(true);
 
         if (message.length() > 150) {
-            player.sendMessage(colorize("&l&cДлина сообщения не может превышать 150 символов"));
+            player.sendMessage(colorize(plugin.getConfig().getString("messages.messageLength")));
             return;
         }
 

@@ -3,6 +3,7 @@ package ru.prisonlife.plmechanics;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
+import ru.prisonlife.plmechanics.commands.Messages;
 import ru.prisonlife.plmechanics.commands.Trade;
 import ru.prisonlife.plmechanics.commands.TradeAcceptDecline;
 import ru.prisonlife.plmechanics.events.GUIListener;
@@ -45,6 +46,10 @@ public class Main extends PLPlugin {
         getCommand("trade").setExecutor(new Trade(this));
         getCommand("tradeaccept").setExecutor(new TradeAcceptDecline());
         getCommand("tradedecline").setExecutor(new TradeAcceptDecline());
+        getCommand("s").setExecutor(new Messages());
+        getCommand("w").setExecutor(new Messages());
+        getCommand("i").setExecutor(new Messages());
+        getCommand("do").setExecutor(new Messages());
     }
 
     private void copyConfigFile() {

@@ -16,3 +16,19 @@ commands:
     description: Decline the trade
     permission: plmechanics.trade.decline
     usage: /tradedecline
+  s:
+    description: Shout message in 40 blocks
+    permission: plmechanics.messages.s
+    usage: /s <message>
+  w:
+    description: Whisper message in 1 block
+    permission: plmechanics.messages.w
+    usage: /w <message>
+  i:
+    description: Send action in 20 blocks
+    permission: plmechanics.messages.i
+    usage: /i <message>
+  do:
+    description: Send result in 20 blocks
+    permission: plmechanics.messages.do
+    usage: /do <message>

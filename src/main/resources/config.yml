@@ -2,5 +2,6 @@ messages:
   toKillerOnDeath: "&l&6Вы убили заключенного и получили %respect%★"
   playerIsOffline: "&l&cИгрок не в сети!"
   playerAlreadyTrading: "&l&6Игрок уже совершает сделку!"
+  messageLength: "&l&cДлина сообщения не может превышать 150 символов"
 settings:
   reduceRespectOnDeath: 10

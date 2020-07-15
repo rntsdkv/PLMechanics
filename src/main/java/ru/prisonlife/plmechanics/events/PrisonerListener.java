@@ -1,22 +1,14 @@
 package ru.prisonlife.plmechanics.events;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.PositionManager;
 import ru.prisonlife.PrisonLife;
@@ -25,11 +17,13 @@ import ru.prisonlife.SpawnID;
 import ru.prisonlife.behavior.SpawnBehavior;
 import ru.prisonlife.behavior.SpawnBehaviorFactory;
 import ru.prisonlife.database.json.BoldPoint;
+import ru.prisonlife.plmechanics.HospitalBarrier;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.*;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
+import static ru.prisonlife.plmechanics.commands.HospitalBarriers.hospitals;
 
 /**
  * @author rntsdkv
@@ -47,6 +41,7 @@ public class PrisonerListener implements Listener {
     public static Map<Player, BukkitTask> messages = new HashMap<>();
 
     public List<Player> deadPlayers = new ArrayList<>();
+    public Map<Player, BukkitTask> taskRegain = new HashMap<>();
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
@@ -72,6 +67,44 @@ public class PrisonerListener implements Listener {
         Player player = (Player) event.getEntity();
 
         if (deadPlayers.contains(player)) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onSleep(PlayerBedEnterEvent event) {
+        Player player = event.getPlayer();
+        Random random = new Random();
+        Block block = event.getBed();
+
+        if (!block.getType().name().contains("BED")) return;
+
+        boolean in = false;
+        for (HospitalBarrier hb : hospitals) {
+            if (hb.isInside(block.getLocation())) in = true; break;
+        }
+        if (!in) return;
+
+        int p = random.nextInt(60) + 60;
+
+        BukkitTask task;
+        task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!player.isSleeping()) return;
+            if (player.getHealth() == 10) return;
+            player.setHealth(player.getHealth() + 0.5);
+            player.sendTitle("+0.5<3", "Вы восстановили здоровье!", 1, 20, 1);
+            player.playSound(player.getLocation(), Sound.ENTITY_WANDERING_TRADER_DRINK_POTION, 1, 1);
+            if (player.getHealth() == 10) deadPlayers.remove(player);
+        }, p * 20, p * 20);
+        taskRegain.put(player, task);
+    }
+
+    @EventHandler
+    public void onSleepUp(PlayerBedLeaveEvent event) {
+        Player player = event.getPlayer();
+
+        if (taskRegain.containsKey(player)) {
+            taskRegain.get(player).cancel();
+            taskRegain.remove(player);
+        }
     }
 
     @EventHandler

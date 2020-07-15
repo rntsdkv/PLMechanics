@@ -1,8 +1,13 @@
 package ru.prisonlife.plmechanics;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
+import ru.prisonlife.plmechanics.commands.HospitalBarriers;
 import ru.prisonlife.plmechanics.commands.Messages;
 import ru.prisonlife.plmechanics.commands.Trade;
 import ru.prisonlife.plmechanics.commands.TradeAcceptDecline;
@@ -15,6 +20,8 @@ import ru.prisonlife.plugin.PromisedPluginFile;
 
 import java.io.File;
 import java.util.List;
+
+import static ru.prisonlife.plmechanics.commands.HospitalBarriers.hospitals;
 
 public class Main extends PLPlugin {
 
@@ -32,6 +39,41 @@ public class Main extends PLPlugin {
         copyConfigFile();
         registerListeners();
         registerCommands();
+
+        FileConfiguration config;
+        ConfigurationSection section = getConfig().getConfigurationSection("hb");
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("hb." + key + ".world"));
+
+                int x1 = getConfig().getInt("hb." + key + ".x1");
+                int y1 = getConfig().getInt("hb." + key + ".y1");
+                int z1 = getConfig().getInt("hb." + key + ".z1");
+
+                int x2 = getConfig().getInt("hb." + key + ".x2");
+                int y2 = getConfig().getInt("hb." + key + ".y2");
+                int z2 = getConfig().getInt("hb." + key + ".z2");
+
+                HospitalBarrier hospitalBarrier = new HospitalBarrier(world, x1, y1, z1, x2, y2, z2);
+                hospitals.add(hospitalBarrier);
+            }
+        }
+        getConfig().set("hb", null);
+        saveConfig();
+    }
+
+    public void onDisable() {
+        for (int i = 0; i <= hospitals.size(); i++) {
+            HospitalBarrier hospitalBarrier = hospitals.get(i);
+            getConfig().set("hb." + i + ".world", hospitalBarrier.world.getName());
+            getConfig().set("hb." + i + ".x1", hospitalBarrier.x1);
+            getConfig().set("hb." + i + ".y1", hospitalBarrier.y1);
+            getConfig().set("hb." + i + ".z1", hospitalBarrier.z1);
+            getConfig().set("hb." + i + ".x2", hospitalBarrier.x2);
+            getConfig().set("hb." + i + ".y2", hospitalBarrier.y2);
+            getConfig().set("hb." + i + ".z2", hospitalBarrier.z2);
+        }
+        saveConfig();
     }
 
     private void registerListeners() {
@@ -50,6 +92,7 @@ public class Main extends PLPlugin {
         getCommand("w").setExecutor(new Messages());
         getCommand("i").setExecutor(new Messages());
         getCommand("do").setExecutor(new Messages());
+        getCommand("hospbarrier").setExecutor(new HospitalBarriers());
     }
 
     private void copyConfigFile() {

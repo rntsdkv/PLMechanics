@@ -46,6 +46,8 @@ public class PrisonerListener implements Listener {
     public static Map<Player, List<ArmorStand>> messagesStands = new HashMap<>();
     public static Map<Player, BukkitTask> messages = new HashMap<>();
 
+    public List<Player> deadPlayers = new ArrayList<>();
+
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
@@ -62,28 +64,14 @@ public class PrisonerListener implements Listener {
         SpawnBehavior spawnBehavior = SpawnBehaviorFactory.createBehavior(SpawnID.HOSPITAL_SPAWN);
 
         spawnBehavior.spawn(prisoner);
+        deadPlayers.add(player);
     }
 
     @EventHandler
     public void onHealthRegain(EntityRegainHealthEvent event) {
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onHungry(FoodLevelChangeEvent event) {
         Player player = (Player) event.getEntity();
 
-        int level = event.getFoodLevel();
-
-        if (player.hasPotionEffect(PotionEffectType.WEAKNESS)) player.removePotionEffect(PotionEffectType.WEAKNESS);
-        if (player.hasPotionEffect(PotionEffectType.SLOW)) player.removePotionEffect(PotionEffectType.SLOW);
-
-        if (level == 10 || level == 9) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1));
-        else if (level == 8 || level == 7) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 2));
-        else if (level == 6 || level == 5) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 3));
-        else if (level <= 4) player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 4));
-
-        if (level <= 10 && !player.hasPotionEffect(PotionEffectType.CONFUSION)) player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 400, 1));
+        if (deadPlayers.contains(player)) event.setCancelled(true);
     }
 
     @EventHandler
@@ -99,20 +87,25 @@ public class PrisonerListener implements Listener {
             return;
         }
 
-        ChatColor chatColor = prisoner.getFaction().getColor();
-        player.sendMessage(String.format("%d (%d)", message, chatColor + player.getName()));
+        ChatColor chatColor;
+        if (PrisonLife.getPrisoner(player).getFaction() == null) chatColor = ChatColor.WHITE;
+        else chatColor = prisoner.getFaction().getColor();
 
+        Bukkit.broadcastMessage("0");
         BoldPoint locationPoint = BoldPoint.fromLocation(player.getLocation());
+        Bukkit.broadcastMessage("1");
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            BoldPoint boldPoint = PrisonLife.getPrisoner(p).getPoint();
+            Bukkit.broadcastMessage("2");
+            BoldPoint boldPoint = BoldPoint.fromLocation(p.getLocation());
+            Bukkit.broadcastMessage("3");
             if (!PositionManager.instance().atSector(locationPoint, 20, boldPoint)) return;
             if (!PositionManager.instance().atSector(locationPoint, 10, boldPoint)) {
-                p.sendMessage(String.format("%d (%d)", message, chatColor + player.getName()));
+                p.sendMessage(message + chatColor + " (" + player.getName() + ")");
             } else if (!PositionManager.instance().atSector(locationPoint, 15, boldPoint)) {
-                p.sendMessage(String.format("%d (%d)", ChatColor.GRAY + message, player.getName()));
+                p.sendMessage(ChatColor.GRAY + message + " (" + player.getName() + ")");
             } else {
-                p.sendMessage(String.format("%d (%d)", ChatColor.DARK_GRAY + message, player.getName()));
+                p.sendMessage(ChatColor.DARK_GRAY + message + " (" + player.getName() + ")");
             }
         }
 

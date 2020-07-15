@@ -86,7 +86,7 @@ public class Trading {
         if (traderStatus == Status.NOT_READY || playerStatus == Status.NOT_READY) return;
 
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            close("good");
+            close("good", null);
             trades.removeIf(trading -> trading.getTrader() == trader);
         }, 100);
     }
@@ -111,7 +111,7 @@ public class Trading {
 
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
             trades.removeIf(trading -> trading.getTrader() == trader);
-            close("good");
+            close("good", null);
         }, 100);
     }
 
@@ -124,9 +124,14 @@ public class Trading {
         }
     }
 
-    public void close(String status) {
-        trader.closeInventory();
-        player.closeInventory();
+    public void close(String status, Player whoClosed) {
+        if (whoClosed == trader) player.closeInventory();
+        else if (whoClosed == player) trader.closeInventory();
+        else {
+            trader.closeInventory();
+            player.closeInventory();
+        }
+
         trader.removePotionEffect(PotionEffectType.GLOWING);
         player.removePotionEffect(PotionEffectType.GLOWING);
         if (status.equals("bad")) {

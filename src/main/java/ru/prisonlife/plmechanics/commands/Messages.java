@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import ru.prisonlife.PositionManager;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.database.json.BoldPoint;
+import ru.prisonlife.faction.Faction;
 
 /**
  * @author rntsdkv
@@ -29,14 +30,17 @@ public class Messages implements CommandExecutor {
         String message = String.join(" ", strings);
 
         if (commandName.equals("s")) {
+            ChatColor color;
+            if (PrisonLife.getPrisoner(player).getFaction() == null) color = ChatColor.WHITE;
+            else color = PrisonLife.getPrisoner(player).getFaction().getColor();
             for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                 if (!PositionManager.instance().atSector(locationPoint, 40, BoldPoint.fromLocation(p.getLocation()))) continue;
-                p.sendMessage(ChatColor.BOLD + message + String.format(" (%d)", player.getName()));
+                p.sendMessage(ChatColor.BOLD + message + color + " (" + player.getName() + ")");
             }
         } else if (commandName.equals("w")) {
             for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                 if (!PositionManager.instance().atSector(locationPoint, 1, BoldPoint.fromLocation(p.getLocation()))) continue;
-                p.sendMessage(ChatColor.DARK_GREEN + message + String.format(" (%d)", player.getName()));
+                p.sendMessage(ChatColor.DARK_GREEN + message + " (" + player.getName() + ")");
             }
         } else if (commandName.equals("i")) {
             for (Player p : Bukkit.getServer().getOnlinePlayers()) {
@@ -46,7 +50,7 @@ public class Messages implements CommandExecutor {
         } else if (commandName.equals("do")) {
             for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                 if (!PositionManager.instance().atSector(locationPoint, 20, BoldPoint.fromLocation(p.getLocation()))) continue;
-                p.sendMessage(ChatColor.LIGHT_PURPLE + message + String.format(" (%d)", player.getName()));
+                p.sendMessage(ChatColor.LIGHT_PURPLE + message + " (" + player.getName() + ")");
             }
         }
 

@@ -18,11 +18,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import ru.prisonlife.PositionManager;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.SpawnID;
 import ru.prisonlife.behavior.SpawnBehavior;
 import ru.prisonlife.behavior.SpawnBehaviorFactory;
+import ru.prisonlife.database.json.BoldPoint;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.*;
@@ -88,14 +90,31 @@ public class PrisonerListener implements Listener {
     public void onMessageSend(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
+        Prisoner prisoner = PrisonLife.getPrisoner(player);
+
+        event.setCancelled(true);
 
         if (message.length() > 150) {
-            event.setCancelled(true);
             player.sendMessage(colorize("&l&cДлина сообщения не может превышать 150 символов"));
+            return;
         }
 
-        ChatColor chatColor = PrisonLife.getPrisoner(player).getFaction().getColor();
-        event.setFormat(String.format("%d (%d)", message, chatColor + player.getName()));
+        ChatColor chatColor = prisoner.getFaction().getColor();
+        player.sendMessage(String.format("%d (%d)", message, chatColor + player.getName()));
+
+        BoldPoint locationPoint = BoldPoint.fromLocation(player.getLocation());
+
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            BoldPoint boldPoint = PrisonLife.getPrisoner(p).getPoint();
+            if (!PositionManager.instance().atSector(locationPoint, 20, boldPoint)) return;
+            if (!PositionManager.instance().atSector(locationPoint, 10, boldPoint)) {
+                p.sendMessage(String.format("%d (%d)", message, chatColor + player.getName()));
+            } else if (!PositionManager.instance().atSector(locationPoint, 15, boldPoint)) {
+                p.sendMessage(String.format("%d (%d)", ChatColor.GRAY + message, player.getName()));
+            } else {
+                p.sendMessage(String.format("%d (%d)", ChatColor.DARK_GRAY + message, player.getName()));
+            }
+        }
 
         Location location = player.getLocation();
         double x = location.getX();

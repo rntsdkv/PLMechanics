@@ -106,6 +106,7 @@ public class PrisonerListener implements Listener {
             for (ArmorStand as : messagesStands.get(player)) as.remove();
             messagesStands.remove(player);
             messages.get(player).cancel();
+            messages.remove(player);
         }
 
         if (message.length() <= 25) {

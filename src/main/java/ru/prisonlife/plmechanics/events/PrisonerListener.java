@@ -122,6 +122,19 @@ public class PrisonerListener implements Listener {
             createArmorStand(player, message.substring(25, 50), x, y + 0.75, z);
             createArmorStand(player, message.substring(50, 75), x, y + 0.5, z);
             createArmorStand(player, message.substring(75, 100), x, y + 0.25, z);
+        } else if (message.length() <= 125) {
+            createArmorStand(player, message.substring(0, 25), x, y + 1.25, z);
+            createArmorStand(player, message.substring(25, 50), x, y + 1, z);
+            createArmorStand(player, message.substring(50, 75), x, y + 0.75, z);
+            createArmorStand(player, message.substring(75, 100), x, y + 0.5, z);
+            createArmorStand(player, message.substring(100, 125), x, y + 0.25, z);
+        } else if (message.length() <= 150) {
+            createArmorStand(player, message.substring(0, 25), x, y + 1.5, z);
+            createArmorStand(player, message.substring(25, 50), x, y + 1.25, z);
+            createArmorStand(player, message.substring(50, 75), x, y + 1, z);
+            createArmorStand(player, message.substring(75, 100), x, y + 0.75, z);
+            createArmorStand(player, message.substring(100, 125), x, y + 0.5, z);
+            createArmorStand(player, message.substring(125, 150), x, y + 0.25, z);
         }
 
         BukkitTask taskMessage;
@@ -144,21 +157,31 @@ public class PrisonerListener implements Listener {
 
             if (armorsStands.size() == 1) {
                 armorsStands.get(0).teleport(location.add(0, 0.25, 0));
-            }
-            else if (armorsStands.size() == 2) {
+            } else if (armorsStands.size() == 2) {
                 armorsStands.get(0).teleport(location.add(0, 0.5, 0));
                 armorsStands.get(1).teleport(location.add(0, 0.25, 0));
-            }
-            else if (armorsStands.size() == 3) {
+            } else if (armorsStands.size() == 3) {
                 armorsStands.get(0).teleport(location.add(0, 0.75, 0));
                 armorsStands.get(1).teleport(location.add(0, 0.5, 0));
                 armorsStands.get(2).teleport(location.add(0, 0.25, 0));
-            }
-            else if (armorsStands.size() == 4) {
+            } else if (armorsStands.size() == 4) {
                 armorsStands.get(0).teleport(location.add(0, 1, 0));
                 armorsStands.get(1).teleport(location.add(0, 0.75, 0));
                 armorsStands.get(2).teleport(location.add(0, 0.5, 0));
                 armorsStands.get(3).teleport(location.add(0, 0.25, 0));
+            } else if (armorsStands.size() == 5) {
+                armorsStands.get(0).teleport(location.add(0, 1.25, 0));
+                armorsStands.get(1).teleport(location.add(0, 1, 0));
+                armorsStands.get(2).teleport(location.add(0, 0.75, 0));
+                armorsStands.get(3).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(4).teleport(location.add(0, 0.25, 0));
+            } else if (armorsStands.size() == 6) {
+                armorsStands.get(0).teleport(location.add(0, 1.5, 0));
+                armorsStands.get(1).teleport(location.add(0, 1.25, 0));
+                armorsStands.get(2).teleport(location.add(0, 1, 0));
+                armorsStands.get(3).teleport(location.add(0, 0.75, 0));
+                armorsStands.get(4).teleport(location.add(0, 0.5, 0));
+                armorsStands.get(5).teleport(location.add(0, 0.25, 0));
             }
         }
     }

@@ -1,6 +1,7 @@
 package ru.prisonlife.plmechanics.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
@@ -15,6 +16,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
@@ -24,6 +26,8 @@ import ru.prisonlife.behavior.SpawnBehaviorFactory;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.*;
+
+import static ru.prisonlife.plmechanics.Main.colorize;
 
 /**
  * @author rntsdkv
@@ -38,8 +42,7 @@ public class PrisonerListener implements Listener {
     }
 
     public static Map<Player, List<ArmorStand>> messagesStands = new HashMap<>();
-    public static Map<Player, Integer> messagesTimer = new HashMap<>();
-    public static BukkitTask taskMessages;
+    public static Map<Player, BukkitTask> messages = new HashMap<>();
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
@@ -86,17 +89,24 @@ public class PrisonerListener implements Listener {
         Player player = event.getPlayer();
         String message = event.getMessage();
 
+        if (message.length() > 150) {
+            event.setCancelled(true);
+            player.sendMessage(colorize("&l&cДлина сообщения не может превышать 150 символов"));
+        }
+
+        ChatColor chatColor = PrisonLife.getPrisoner(player).getFaction().getColor();
+        event.setFormat(String.format("%d (%d)", message, chatColor + player.getName()));
+
         Location location = player.getLocation();
         double x = location.getX();
         double y = location.getY();
         double z = location.getZ();
 
-        if (messagesStands.containsKey(player)) {
-            for (ArmorStand armorStand : messagesStands.get(player)) armorStand.remove();
-            messagesTimer.remove(player);
+        if (messages.containsKey(player) && messages.get(player).isSync()) {
+            for (ArmorStand as : messagesStands.get(player)) as.remove();
             messagesStands.remove(player);
+            messages.get(player).cancel();
         }
-
 
         if (message.length() <= 25) {
             createArmorStand(player, message, x, y + 0.25, z);
@@ -113,23 +123,15 @@ public class PrisonerListener implements Listener {
             createArmorStand(player, message.substring(50, 75), x, y + 0.5, z);
             createArmorStand(player, message.substring(75, 100), x, y + 0.25, z);
         }
-        messagesTimer.put(player, 0);
 
-        if (messagesStands.size() == 1) {
-            taskMessages = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                for (Player p : messagesTimer.keySet()) {
-                    messagesTimer.replace(p, messagesTimer.get(p) + 1);
-                    if (messagesTimer.get(p) == 10) {
-                        for (ArmorStand a : messagesStands.get(p)) {
-                            a.remove();
-                        }
-                        messagesTimer.remove(p);
-                        messagesStands.remove(p);
-                    }
-                }
-                if (messagesTimer.size() == 0) taskMessages.cancel();
-            }, 20, 20);
-        }
+        BukkitTask taskMessage;
+        taskMessage = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                for (ArmorStand as : messagesStands.get(player)) as.remove();
+            });
+            messages.remove(player);
+        }, 200);
+        messages.put(player, taskMessage);
     }
 
     @EventHandler

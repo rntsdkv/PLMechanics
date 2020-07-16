@@ -7,8 +7,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import ru.prisonlife.plmechanics.Trading;
+import ru.prisonlife.util.InventoryUtil;
 
+import static ru.prisonlife.plmechanics.Main.colorize;
 import static ru.prisonlife.plmechanics.commands.Trade.trades;
 
 /**
@@ -67,11 +70,31 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
+        Player p = (Player) event.getPlayer();
 
         for (Trading trading : trades) {
-            trading.close("bad", player);
-            if (player == trading.getTrader() || player == trading.getPlayer()) trades.remove(trading);
+            Player trader = trading.getTrader();
+            Player player = trading.getPlayer();
+
+            if (p != trader && p != player) return;
+
+            if (p == trader) player.closeInventory();
+            else trader.closeInventory();
+
+            trader.sendMessage(colorize("&l&cСделка разорвана!"));
+            player.sendMessage(colorize("&l&cСделка разорвана!"));
+
+            trader.removePotionEffect(PotionEffectType.GLOWING);
+            player.removePotionEffect(PotionEffectType.GLOWING);
+
+            InventoryUtil.putItemStacks(trader.getInventory(), trading.getTraderItems());
+            InventoryUtil.putItemStacks(player.getInventory(), trading.getPlayerItems());
+
+            if (trading.getTask().isSync()) trading.getTask().cancel();
+
+            trades.remove(trading);
+
+            break;
         }
     }
 }

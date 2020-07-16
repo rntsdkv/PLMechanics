@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -13,6 +14,7 @@ import ru.prisonlife.plugin.PLPlugin;
 import ru.prisonlife.util.InventoryUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
@@ -67,7 +69,11 @@ public class Trading {
 
     public void putTraderItem(ItemStack item) { traderItems.add(item); }
 
+    public List<ItemStack> getTraderItems() { return traderItems; }
+
     public void putPlayerItem(ItemStack item) { playerItems.add(item); }
+
+    public List<ItemStack> getPlayerItems() { return playerItems; }
 
     public void setTraderStatus(String status) {
         traderStatus = Status.valueOf(status);
@@ -86,7 +92,7 @@ public class Trading {
         if (traderStatus == Status.NOT_READY || playerStatus == Status.NOT_READY) return;
 
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            close("good", null);
+            close();
             trades.removeIf(trading -> trading.getTrader() == trader);
         }, 100);
     }
@@ -111,7 +117,7 @@ public class Trading {
 
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
             trades.removeIf(trading -> trading.getTrader() == trader);
-            close("good", null);
+            close();
         }, 100);
     }
 
@@ -124,36 +130,30 @@ public class Trading {
         }
     }
 
-    public void close(String status, Player whoClosed) {
-        if (whoClosed == trader) player.closeInventory();
-        else if (whoClosed == player) trader.closeInventory();
-        else {
-            trader.closeInventory();
-            player.closeInventory();
-        }
+    public void close() {
+        player.closeInventory();
+        trader.closeInventory();
 
         trader.removePotionEffect(PotionEffectType.GLOWING);
         player.removePotionEffect(PotionEffectType.GLOWING);
-        if (status.equals("bad")) {
-            InventoryUtil.putItemStacks(trader.getInventory(), traderItems);
-            InventoryUtil.putItemStacks(player.getInventory(), playerItems);
-            trader.sendMessage(colorize("&l&6Сделка разорвана"));
-            player.sendMessage(colorize("&l&6Сделка разорвана"));
-        } else {
-            try {
-                InventoryUtil.putItemStacks(player.getInventory(), traderItems);
-                InventoryUtil.putItemStacks(trader.getInventory(), playerItems);
-            } catch (Exception e) {
-                InventoryUtil.putItemStacks(trader.getInventory(), traderItems);
-                InventoryUtil.putItemStacks(player.getInventory(), playerItems);
-                trader.sendMessage(colorize("&l&cСделка разорвана, у одного из вас недостаточно места в карманах"));
-                player.sendMessage(colorize("&l&cСделка разорвана, у одного из вас недостаточно места в карманах"));
-                return;
-            }
 
-            trader.sendMessage(colorize("&l&6Сделка завершена"));
-            player.sendMessage(colorize("&l&6Сделка завершена"));
+        if (!canPuttedItems(player.getInventory(), traderItems)) {
+            player.sendMessage(colorize("&l&cУ вас недостаточно места в карманах! Сделка разорвана."));
+            trader.sendMessage(colorize("&l&cУ " + player.getName() + " недостаточно места в карманах! Сделка разорвана."));
+            return;
         }
+
+        if (!canPuttedItems(trader.getInventory(), playerItems)) {
+            trader.sendMessage(colorize("&l&cУ вас недостаточно места в карманах! Сделка разорвана."));
+            player.sendMessage(colorize("&l&cУ " + trader.getName() + " недостаточно места в карманах! Сделка разорвана."));
+            return;
+        }
+
+        InventoryUtil.putItemStacks(trader.getInventory(), playerItems);
+        InventoryUtil.putItemStacks(player.getInventory(), traderItems);
+
+        trader.sendMessage(colorize("&l&6Сделка завершена"));
+        player.sendMessage(colorize("&l&6Сделка завершена"));
     }
 
     public void start() {
@@ -163,6 +163,8 @@ public class Trading {
         trader.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
         player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
     }
+
+    public BukkitTask getTask() { return task; }
 
     private void createGUI(Player trader, Player player) {
         if (level == 1) {
@@ -197,6 +199,40 @@ public class Trading {
 
             trader.openInventory(gui1);
             player.openInventory(gui2);
+        }
+    }
+
+    private boolean canPuttedItems(Inventory inventory, List<ItemStack> items) {
+        int inventorySze = inventory instanceof PlayerInventory ? 36 : inventory.getSize();
+        int counter = 0;
+        Iterator var = items.iterator();
+
+        while (true) {
+            while (var.hasNext()) {
+                ItemStack item = (ItemStack) var.next();
+                String localizedName = item.getItemMeta().getLocalizedName();
+                int amount1 = item.getAmount();
+
+                for (int j = 0; j < inventorySze; j++) {
+                    ItemStack itemStack = inventory.getItem(j);
+                    if (itemStack == null) {
+                        counter++;
+                        break;
+                    }
+
+                    if (itemStack.getItemMeta().getLocalizedName().equals(localizedName)) {
+                        int amount2 = itemStack.getAmount();
+                        if (amount1 + amount2 <= 64) {
+                            counter++;
+                            break;
+                        }
+
+                        amount1 -= 64 - amount2;
+                    }
+                }
+            }
+
+            return counter == items.size();
         }
     }
 }

@@ -84,8 +84,7 @@ public class GUIListener implements Listener {
             trader.sendMessage(colorize("&l&cСделка разорвана!"));
             player.sendMessage(colorize("&l&cСделка разорвана!"));
 
-            trader.removePotionEffect(PotionEffectType.GLOWING);
-            player.removePotionEffect(PotionEffectType.GLOWING);
+            if (trading.particles.isSync()) trading.particles.cancel();
 
             InventoryUtil.putItemStacks(trader.getInventory(), trading.getTraderItems());
             InventoryUtil.putItemStacks(player.getInventory(), trading.getPlayerItems());

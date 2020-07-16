@@ -2,6 +2,7 @@ package ru.prisonlife.plmechanics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -43,6 +44,7 @@ public class Trading {
     private List<ItemStack> traderItems = new ArrayList<>();
     private List<ItemStack> playerItems = new ArrayList<>();
     private BukkitTask task;
+    public BukkitTask particles;
 
     public Trading(Player trader, Player player, int level) {
         this.trader = trader;
@@ -149,6 +151,8 @@ public class Trading {
             return;
         }
 
+        if (particles.isSync()) particles.cancel();
+
         InventoryUtil.putItemStacks(trader.getInventory(), playerItems);
         InventoryUtil.putItemStacks(player.getInventory(), traderItems);
 
@@ -160,8 +164,11 @@ public class Trading {
         traderStatus = Status.NOT_READY;
         playerStatus = Status.NOT_READY;
         createGUI(trader, player);
-        trader.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
+
+        particles = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            trader.spawnParticle(Particle.LAVA, trader.getLocation(), 1);
+            player.spawnParticle(Particle.LAVA, player.getLocation(), 1);
+        }, 0, 20);
     }
 
     public BukkitTask getTask() { return task; }

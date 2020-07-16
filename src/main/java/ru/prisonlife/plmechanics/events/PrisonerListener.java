@@ -153,24 +153,24 @@ public class PrisonerListener implements Listener {
         }
 
         if (messageLength <= 20) {
-            createArmorStand(player, message, x, y + 0.25, z);
+            createArmorStand(player, message, x, y + 0.15, z);
         } else if (messageLength <= 30) {
-            createArmorStand(player, message.substring(0, 20), x, y + 0.5, z);
-            createArmorStand(player, message.substring(20), x, y + 0.25, z);
+            createArmorStand(player, message.substring(0, 20), x, y + 0.4, z);
+            createArmorStand(player, message.substring(20), x, y + 0.15, z);
         } else if (messageLength <= 50) {
-            createArmorStand(player, message.substring(0, 35), x, y + 0.5, z);
-            createArmorStand(player, message.substring(35), x, y + 0.25, z);
+            createArmorStand(player, message.substring(0, 35), x, y + 0.4, z);
+            createArmorStand(player, message.substring(35), x, y + 0.15, z);
         } else if (messageLength <= 70) {
-            createArmorStand(player, message.substring(0, 45), x, y + 0.5, z);
-            createArmorStand(player, message.substring(45), x, y + 0.25, z);
+            createArmorStand(player, message.substring(0, 45), x, y + 0.4, z);
+            createArmorStand(player, message.substring(45), x, y + 0.15, z);
         } else if (messageLength <= 80) {
-            createArmorStand(player, message.substring(0, 45), x, y + 0.75, z);
-            createArmorStand(player, message.substring(45, 65), x, y + 0.5, z);
-            createArmorStand(player, message.substring(65), x, y + 0.25, z);
+            createArmorStand(player, message.substring(0, 45), x, y + 0.65, z);
+            createArmorStand(player, message.substring(45, 65), x, y + 0.4, z);
+            createArmorStand(player, message.substring(65), x, y + 0.15, z);
         } else {
-            createArmorStand(player, message.substring(0, 50), x, y + 0.75, z);
-            createArmorStand(player, message.substring(50, 80), x, y + 0.5, z);
-            createArmorStand(player, message.substring(80), x, y + 0.25, z);
+            createArmorStand(player, message.substring(0, 50), x, y + 0.65, z);
+            createArmorStand(player, message.substring(50, 80), x, y + 0.4, z);
+            createArmorStand(player, message.substring(80), x, y + 0.15, z);
         }
 
         BukkitTask taskMessage;
@@ -192,14 +192,14 @@ public class PrisonerListener implements Listener {
             Location location = player.getLocation();
 
             if (armorsStands.size() == 1) {
-                armorsStands.get(0).teleport(location.add(0, 0.25, 0));
+                armorsStands.get(0).teleport(location.add(0, 0.15, 0));
             } else if (armorsStands.size() == 2) {
-                armorsStands.get(0).teleport(location.add(0, 0.5, 0));
-                armorsStands.get(1).teleport(location.add(0, 0.25, 0));
+                armorsStands.get(0).teleport(location.add(0, 0.4, 0));
+                armorsStands.get(1).teleport(location.add(0, 0.15, 0));
             } else if (armorsStands.size() == 3) {
-                armorsStands.get(0).teleport(location.add(0, 0.75, 0));
-                armorsStands.get(1).teleport(location.add(0, 0.5, 0));
-                armorsStands.get(2).teleport(location.add(0, 0.25, 0));
+                armorsStands.get(0).teleport(location.add(0, 0.65, 0));
+                armorsStands.get(1).teleport(location.add(0, 0.4, 0));
+                armorsStands.get(2).teleport(location.add(0, 0.15, 0));
             }
         }
     }

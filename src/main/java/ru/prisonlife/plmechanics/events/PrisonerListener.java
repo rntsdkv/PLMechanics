@@ -1,5 +1,6 @@
 package ru.prisonlife.plmechanics.events;
 
+import fr.minuskube.netherboard.Netherboard;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;

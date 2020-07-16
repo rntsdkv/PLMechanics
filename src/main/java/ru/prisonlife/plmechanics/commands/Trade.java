@@ -66,7 +66,7 @@ public class Trade implements CommandExecutor {
         }
 
         for (Trading trading : trades) {
-            if (trading.getPlayer().equals(t)) {
+            if (trading.getPlayer().equals(t) || trading.getTrader().equals(t)) {
                 player.sendMessage(colorize(config.getString("messages.playerAlreadyTrading")));
                 return true;
             }
@@ -98,6 +98,8 @@ public class Trade implements CommandExecutor {
         textComponent1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tradedecline"));
         t.spigot().sendMessage(textComponent);
         t.spigot().sendMessage(textComponent1);
+
+        player.sendMessage(colorize("&l&6Вы отправили предложение о трейде!"));
         return true;
     }
 }

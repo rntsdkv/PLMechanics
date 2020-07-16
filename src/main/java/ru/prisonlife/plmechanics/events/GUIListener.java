@@ -76,9 +76,9 @@ public class GUIListener implements Listener {
             Player trader = trading.getTrader();
             Player player = trading.getPlayer();
 
-            if (p != trader && p != player) return;
+            if (!p.equals(trader) && !p.equals(player)) return;
 
-            if (p == trader) player.closeInventory();
+            if (p.equals(trader)) player.closeInventory();
             else trader.closeInventory();
 
             trader.sendMessage(colorize("&l&cСделка разорвана!"));

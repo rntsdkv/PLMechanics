@@ -40,7 +40,7 @@ public class HospitalBarriers implements CommandExecutor {
         if (length == 1) {
             if (strings[0].equals("pos1")) pos1(commandSender);
             else if (strings[0].equals("pos2")) pos2(commandSender);
-            create(commandSender);
+            else if (strings[0].equals("create")) create(commandSender);
         }
         return true;
     }

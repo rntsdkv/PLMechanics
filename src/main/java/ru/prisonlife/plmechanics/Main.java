@@ -1,23 +1,12 @@
 package ru.prisonlife.plmechanics;
 
-import fr.minuskube.netherboard.Netherboard;
-import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
-import ru.prisonlife.PrisonLife;
-import ru.prisonlife.Prisoner;
-import ru.prisonlife.economy.Apartments;
-import ru.prisonlife.economy.CageHome;
-import ru.prisonlife.economy.CageHomeType;
-import ru.prisonlife.faction.Faction;
 import ru.prisonlife.plmechanics.commands.*;
-import ru.prisonlife.plmechanics.events.GUIListener;
 import ru.prisonlife.plmechanics.events.PrisonerListener;
 import ru.prisonlife.plmechanics.events.onItemDrop;
 import ru.prisonlife.plmechanics.events.PrisonerDeath;
@@ -46,7 +35,6 @@ public class Main extends PLPlugin {
         registerListeners();
         registerCommands();
 
-        FileConfiguration config;
         ConfigurationSection section = getConfig().getConfigurationSection("hb");
         if (section != null) {
             for (String key : section.getKeys(false)) {
@@ -66,42 +54,6 @@ public class Main extends PLPlugin {
         }
         getConfig().set("hb", null);
         saveConfig();
-
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                Prisoner prisoner = PrisonLife.getPrisoner(player);
-                Faction faction = prisoner.getFaction();
-                BPlayerBoard board = Netherboard.instance().getBoard(player);
-
-                if (board == null) board = Netherboard.instance().createBoard(player, "PrisonLife");
-
-                board = Netherboard.instance().createBoard(player, "PrisonLife");
-                board.set("", 0);
-                board.set("Имя: " + player.getName(), -1);
-                board.set(String.format("Уровнь: %s [%s/%s]", prisoner.getLevel(), prisoner.getExp(), 0), -2);
-                board.set(String.format("Респект: %srp", prisoner.getRespect()), -3);
-                board.set("", -4);
-                if (!prisoner.hasCageHouse()) board.set("Проживание: -", -5);
-                else {
-                    CageHome cage = prisoner.getCageHome();
-                    if (cage.getType() == CageHomeType.HOUSE) board.set("Проживание: Клетка-дом", -5);
-                    else board.set("Проживание: Клетка-отель", -5);
-
-                    if (cage.getApartments() == Apartments.ELITE) board.set("Тип дома: Элитный", -6);
-                    else if (cage.getApartments() == Apartments.COMFORTABLE) board.set("Тип дома: Комфортный", -6);
-                    else if (cage.getApartments() == Apartments.COMMON) board.set("Тип дома: Обычный", -6);
-                    else if (cage.getApartments() == Apartments.SLUM) board.set("Тип дома: Трущобный", -6);
-
-                    board.set("Номер: " + cage.getName(), -7);
-                }
-                board.set("", -8);
-                if (faction == null) board.set("Организация: -", -9);
-                else {
-                    board.set("Организация: " + faction.getColor() + faction.getName(), -9);
-                    board.set("Должность: (" + prisoner.getRang() + ")", -10);
-                }
-            }
-        }, 0, 50);
     }
 
     public void onDisable() {

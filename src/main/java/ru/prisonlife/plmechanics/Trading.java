@@ -118,7 +118,7 @@ public class Trading {
         if (traderStatus == Status.NOT_READY || playerStatus == Status.NOT_READY) return;
 
         task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            trades.removeIf(trading -> trading.getTrader() == trader);
+            for (Trading trading : trades) if (trading.getTrader().equals(trader)) trades.remove(trading);
             close();
         }, 100);
     }
@@ -133,12 +133,6 @@ public class Trading {
     }
 
     public void close() {
-        player.closeInventory();
-        trader.closeInventory();
-
-        trader.removePotionEffect(PotionEffectType.GLOWING);
-        player.removePotionEffect(PotionEffectType.GLOWING);
-
         if (!canPuttedItems(player.getInventory(), traderItems)) {
             player.sendMessage(colorize("&l&cУ вас недостаточно места в карманах! Сделка разорвана."));
             trader.sendMessage(colorize("&l&cУ " + player.getName() + " недостаточно места в карманах! Сделка разорвана."));

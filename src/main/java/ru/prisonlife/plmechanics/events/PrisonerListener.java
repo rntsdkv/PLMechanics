@@ -1,15 +1,20 @@
 package ru.prisonlife.plmechanics.events;
 
+import com.sainttx.holograms.api.Hologram;
 import fr.minuskube.netherboard.Netherboard;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.PositionManager;
 import ru.prisonlife.PrisonLife;
@@ -18,6 +23,9 @@ import ru.prisonlife.SpawnID;
 import ru.prisonlife.behavior.SpawnBehavior;
 import ru.prisonlife.behavior.SpawnBehaviorFactory;
 import ru.prisonlife.database.json.BoldPoint;
+import ru.prisonlife.item.PrisonItem;
+import ru.prisonlife.item.PrisonItemBuilder;
+import ru.prisonlife.item.PrisonItemFactory;
 import ru.prisonlife.plmechanics.HospitalBarrier;
 import ru.prisonlife.plugin.PLPlugin;
 
@@ -25,6 +33,8 @@ import java.util.*;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
 import static ru.prisonlife.plmechanics.commands.HospitalBarriers.hospitals;
+import static ru.prisonlife.plmechanics.commands.Regeneration.playerBed;
+import static ru.prisonlife.plmechanics.events.PrisonerDeath.deadPlayers;
 
 /**
  * @author rntsdkv
@@ -41,71 +51,33 @@ public class PrisonerListener implements Listener {
     public static Map<Player, List<ArmorStand>> messagesStands = new HashMap<>();
     public static Map<Player, BukkitTask> messages = new HashMap<>();
 
-    public List<Player> deadPlayers = new ArrayList<>();
-    public Map<Player, BukkitTask> taskRegain = new HashMap<>();
-
-    @EventHandler
-    public void onRespawn(PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
-        Prisoner prisoner = PrisonLife.getPrisoner(player);
-
-        Random random = new Random();
-
-        int x = random.nextInt(3);
-
-        if (x == 0) player.setHealth(1);
-        else if (x == 1) player.setHealth(2);
-        else if (x == 2) player.setHealth(3);
-
-        SpawnBehavior spawnBehavior = SpawnBehaviorFactory.createBehavior(SpawnID.HOSPITAL_SPAWN);
-
-        spawnBehavior.spawn(prisoner);
-        deadPlayers.add(player);
-    }
 
     @EventHandler
     public void onHealthRegain(EntityRegainHealthEvent event) {
         Player player = (Player) event.getEntity();
 
-        if (deadPlayers.contains(player)) event.setCancelled(true);
+        boolean onBed = playerBed.containsKey(player);
+
+        if (deadPlayers.contains(player) && !onBed) event.setCancelled(true);
+
+        if (onBed) {
+            player.sendTitle("+1 HP", null, 1, 20, 1);
+            if (player.getHealth() == 10) {
+                player.sendMessage(colorize("&l&6Вы восстановили здоровье!"));
+                playerBed.remove(player);
+                deadPlayers.remove(player);
+            }
+        }
     }
 
     @EventHandler
-    public void onSleep(PlayerBedEnterEvent event) {
+    public void onPotionUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Random random = new Random();
-        Block block = event.getBed();
+        ItemStack ammoBox = PrisonItemFactory.createItem(null, PrisonItem.AMMO_BOX);
 
-        if (!block.getType().name().contains("BED")) return;
+        if (!player.getInventory().getItemInMainHand().equals(ammoBox)) return;
 
-        boolean in = false;
-        for (HospitalBarrier hb : hospitals) {
-            if (hb.isInside(block.getLocation())) in = true; break;
-        }
-        if (!in) return;
-
-        int p = random.nextInt(60) + 60;
-
-        BukkitTask task;
-        task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if (!player.isSleeping()) return;
-            if (player.getHealth() == 10) return;
-            player.setHealth(player.getHealth() + 0.5);
-            player.sendTitle("+0.5<3", "Вы восстановили здоровье!", 1, 20, 1);
-            player.playSound(player.getLocation(), Sound.ENTITY_WANDERING_TRADER_DRINK_POTION, 1, 1);
-            if (player.getHealth() == 10) deadPlayers.remove(player);
-        }, p * 20, p * 20);
-        taskRegain.put(player, task);
-    }
-
-    @EventHandler
-    public void onSleepUp(PlayerBedLeaveEvent event) {
-        Player player = event.getPlayer();
-
-        if (taskRegain.containsKey(player)) {
-            taskRegain.get(player).cancel();
-            taskRegain.remove(player);
-        }
+        player.setHealth(player.getHealth() + 3);
     }
 
     @EventHandler

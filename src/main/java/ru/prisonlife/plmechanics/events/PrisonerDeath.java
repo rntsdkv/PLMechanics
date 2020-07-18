@@ -10,14 +10,21 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
+import ru.prisonlife.SpawnID;
+import ru.prisonlife.behavior.SpawnBehavior;
+import ru.prisonlife.behavior.SpawnBehaviorFactory;
 import ru.prisonlife.item.PrisonItem;
 import ru.prisonlife.plugin.PLPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static ru.prisonlife.plmechanics.Main.colorize;
 
 public class PrisonerDeath implements Listener {
+
+    public static List<Player> deadPlayers = new ArrayList<>();
 
     private PLPlugin plugin;
     public PrisonerDeath(PLPlugin main) {
@@ -46,6 +53,17 @@ public class PrisonerDeath implements Listener {
                 .replace("%respect%", String.valueOf(respect)));
 
         dead.getInventory().clear();
+
+        Random random = new Random();
+        int x = random.nextInt(3);
+
+        SpawnBehavior spawnBehavior = SpawnBehaviorFactory.createBehavior(SpawnID.HOSPITAL_SPAWN);
+        spawnBehavior.spawn(deadPrisoner);
+
+        if (x == 0) dead.setHealth(1);
+        else if (x == 1) dead.setHealth(2);
+        else if (x == 2) dead.setHealth(3);
+        deadPlayers.add(dead);
     }
 
     private int respectManager(Prisoner killer, Prisoner dead) {

@@ -30,7 +30,7 @@ public class GUIListener implements Listener {
         Trading trading = null;
 
         for (Trading t : trades) {
-            if (!(t.getTrader() == player) && !(t.getPlayer() == player)) continue;
+            if (!t.getTrader().equals(player) && !t.getPlayer().equals(player)) continue;
             trading = t;
             break;
         }
@@ -40,17 +40,18 @@ public class GUIListener implements Listener {
         if (trading.getLevel() == 1) {
             if (event.getSlot() == 21) {
                 event.setCancelled(true);
-                if (player == trading.getTrader()) trading.setTraderStatus("READY");
+                if (trading.getTrader().equals(player)) trading.setTraderStatus("READY");
                 else trading.setPlayerStatus("READY");
             } else if (event.getSlot() == 23) {
                 event.setCancelled(true);
-                if (player == trading.getTrader()) trading.setTraderStatus("NOT_READY");
+                if (trading.getTrader().equals(player)) trading.setTraderStatus("NOT_READY");
                 else trading.setPlayerStatus("NOT_READY");
             } else if (event.getSlot() != 10) {
                 event.setCancelled(true);
                 return;
             }
-            if (trading.getTrader() == player && trading.getTraderStatus().equals("NOT_READY")) {
+
+            if (trading.getTrader().equals(player) && trading.getTraderStatus().equals("NOT_READY")) {
                 ItemStack item = event.getClickedInventory().getItem(10);
                 if (item == null) return;
                 trading.clearTraderItems();
@@ -78,13 +79,10 @@ public class GUIListener implements Listener {
 
             if (!p.equals(trader) && !p.equals(player)) return;
 
-            if (p.equals(trader)) player.closeInventory();
-            else trader.closeInventory();
-
             trader.sendMessage(colorize("&l&cСделка разорвана!"));
             player.sendMessage(colorize("&l&cСделка разорвана!"));
 
-            if (trading.particles.isSync()) trading.particles.cancel();
+            if (trading.particles != null && trading.particles.isSync()) trading.particles.cancel();
 
             InventoryUtil.putItemStacks(trader.getInventory(), trading.getTraderItems());
             InventoryUtil.putItemStacks(player.getInventory(), trading.getPlayerItems());
